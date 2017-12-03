@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Paired Devices"
-        android:id="@+id/button"
+        android:id="@+id/pairedDevicesButton"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -30,10 +30,10 @@
         android:layout_alignParentEnd="true" />
 
     <ListView
+        android:id="@+id/deviceList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_below="@+id/textView"
-        android:layout_above="@+id/button" />
+        android:layout_above="@+id/pairedDevicesButton"
+        android:layout_below="@+id/textView" />
 
 </RelativeLayout>

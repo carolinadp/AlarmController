@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.up.alarmcontroller">
 
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".StartActivity"
-            android:label="@string/title_activity_start"
+            android:label="AlarmController"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DeviceListActivity"></activity>
+        <activity
+            android:name=".DeviceListActivity"
+            android:label="AlarmController"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AlarmControlActivity"></activity>
     </application>
 
 </manifest>
