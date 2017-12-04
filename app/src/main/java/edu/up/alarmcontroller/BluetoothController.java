@@ -9,11 +9,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -85,6 +88,41 @@ public class BluetoothController extends AsyncTask<Void, Void, Void>  // UI thre
             ConnectSuccess = false;//if the try failed, you can check the exception here
         }
         return null;
+    }
+
+    @Nullable
+    public List<String> getInputLines(){
+        final byte delimiter = 10;
+        ArrayList<String > ans = new ArrayList<> ();
+        try
+        {
+            int bytesAvailable = inputStream.available();
+            if(bytesAvailable > 0)
+            {
+                byte[] packetBytes = new byte[bytesAvailable];
+                inputStream.read(packetBytes);
+                for(int i=0;i<bytesAvailable;i++)
+                {
+                    byte b = packetBytes[i];
+                    if(b == delimiter)
+                    {
+                        byte[] encodedBytes = new byte[readBufferPosition];
+                        System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                        final String data = new String(encodedBytes, "US-ASCII");
+                        readBufferPosition = 0;
+                        ans.add(data);
+                    }
+                    else
+                    {
+                        readBuffer[readBufferPosition++] = b;
+                    }
+                }
+            }
+        }
+        catch (IOException ex)
+        {
+        }
+        return ans;
     }
 
     public void beginListenForData()
@@ -190,6 +228,7 @@ public class BluetoothController extends AsyncTask<Void, Void, Void>  // UI thre
 
     public void Disconnect()
     {
+        ActiveState.getInstance().deactivate();
         instance.stopWorker = true;
         if (btSocket!=null) //If the btSocket is busy
         {

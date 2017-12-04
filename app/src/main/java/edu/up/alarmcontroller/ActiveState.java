@@ -1,8 +1,11 @@
 package edu.up.alarmcontroller;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.os.Handler;
 import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * Created by carolinadelgadillo on 12/2/17.
@@ -19,13 +22,7 @@ class ActiveState {
     private Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-            if (!received) {
-                startAlarm();
-            } else {
-                received = false;
-                BluetoothController.getInstance().sendMessage(Transmit.YOU_THERE);
-            }
-            mHandler.postDelayed(mStatusChecker, mInterval);
+            checkAnswer();
         }
     };
 
@@ -73,6 +70,31 @@ class ActiveState {
     {
         Toast.makeText(context,s, Toast.LENGTH_LONG).show();
     }
+
+    private void checkAnswer() {
+        List<String> input = BluetoothController.getInstance().getInputLines();
+        for (String s : input){
+            if (s.equals(Receive.IM_HERE)) {
+                receive();
+            } else if (s.equals(Receive.START_ALARM)) {
+                BluetoothController.getInstance().Disconnect();
+                deactivate();
+                startAlarm();
+                return;
+            }
+        }
+        if (!received) {
+            BluetoothController.getInstance().Disconnect();
+            deactivate();
+            startAlarm();
+            return;
+        } else {
+            received = false;
+            BluetoothController.getInstance().sendMessage(Transmit.YOU_THERE);
+            mHandler.postDelayed(mStatusChecker, mInterval);
+        }
+    }
+
 
 
 }
